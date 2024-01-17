@@ -7,6 +7,8 @@ const useData = (location: string) => {
     const fetchData = async () => {
         const response = await apiWeather.get(`/forecast.json?key=7a2ed8bfacc04835a45144307240901&q=${location}&days=7&aqi=no&alerts=no`);
         setWeatherData(response.data);
+        console.log("weatherData: ", weatherData)
+        
     };
     fetchData();
   }, [location]);

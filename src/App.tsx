@@ -9,20 +9,20 @@ interface Props {
   onSearch: (searchPlace: string) => void;
 }
 export interface SearchQuery {
-  searchText: string;
+  searchLocation: string;
 }
 function App() {
   const currentHour = new Date().getHours();
   const [location, setLocation] = useState('Jerusalem');
   const weatherData = useData(location);
-  console.log("weatherData", weatherData)
-  const [weatherQuery, setWeatherQuery] = useState<SearchQuery>({} as SearchQuery);
+
+
   return <Grid templateAreas={{
     base: `"nav" "main"`,
     lg: `"nav nav" "aside main"`
   }}>
     <GridItem area='nav'>
-      <Navbar onSearch={(searchText) => setWeatherQuery({ ...weatherQuery, searchText })} />
+      <Navbar onSearch={(searchLocation) => setLocation(searchLocation)} />
     </GridItem>
 
     <GridItem area='aside'>
@@ -32,10 +32,10 @@ function App() {
     <GridItem area='main'>
       <HStack justifyContent={'space-between'} alignItems={'flex-start'} padding={10}>
 
-        <List spacing={-20}>
+        <List spacing={-5}>
           <ListItem>  <Text>{weatherData?.current?.temp_c}°{" "}
             {weatherData?.current?.condition?.text}</Text></ListItem>
-          <ListItem>  <Image boxSize='250px' src={weatherData?.current?.condition?.icon} /></ListItem>
+          <ListItem>  <Image boxSize='230px' src={weatherData?.current?.condition?.icon} /></ListItem>
         </List>
 
         <List>
@@ -45,7 +45,7 @@ function App() {
         </List>
 
       </HStack>
-
+      {/* 
       <Grid templateColumns='repeat(6, 1fr)' gap={6}>
         {
           weatherData.forecast.forecastday[0].hour.slice(currentHour, currentHour + 6).map((hour) => (<>
@@ -58,7 +58,7 @@ function App() {
           </>
           ))
         }
-      </Grid>
+      </Grid> */}
 
 
       {/* <Grid templateColumns='repeat(7, 1fr)' gap={6}>

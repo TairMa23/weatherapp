@@ -9,6 +9,7 @@ const Navbar = ({ onSearch }: Props) => {
     return (
         <HStack justifyContent={'space-between'} padding={10}>
             <SearchInput onSearch={onSearch} />
+
             <ColorModeSwitch />
         </HStack>
     )
