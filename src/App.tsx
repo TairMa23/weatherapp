@@ -1,9 +1,10 @@
-import { Grid, GridItem, HStack, List, ListItem, Show, Text } from '@chakra-ui/react'
+import { Grid, GridItem, HStack, Image, List, ListItem, Flex, Text } from '@chakra-ui/react'
 import './App.css'
 import SearchInput from './components/SearchInput'
 import useData from './hooks/useData';
 import Navbar from './components/Navbar';
 import { useState } from 'react';
+import OptionList from './components/OptionList';
 interface Props {
   onSearch: (searchPlace: string) => void;
 }
@@ -11,6 +12,7 @@ export interface SearchQuery {
   searchText: string;
 }
 function App() {
+  const currentHour = new Date().getHours();
   const [location, setLocation] = useState('Jerusalem');
   const weatherData = useData(location);
   console.log("weatherData", weatherData)
@@ -23,18 +25,43 @@ function App() {
       <Navbar onSearch={(searchText) => setWeatherQuery({ ...weatherQuery, searchText })} />
     </GridItem>
 
-    <GridItem area='aside'>  </GridItem>
+    <GridItem area='aside'>
+      <OptionList />
+    </GridItem>
 
     <GridItem area='main'>
-      <List>
-        <ListItem>{weatherData?.location?.name}</ListItem>
-        <ListItem>{weatherData?.location?.country}</ListItem>
-        <ListItem>{weatherData?.location?.tz_id}</ListItem>
-        <ListItem>{weatherData?.current?.temp_c}°</ListItem>
-        <ListItem>{weatherData?.current?.condition?.text}<img src={weatherData?.current?.condition?.icon} /></ListItem>
+      <HStack justifyContent={'space-between'} alignItems={'flex-start'} padding={10}>
+
+        <List spacing={-20}>
+          <ListItem>  <Text>{weatherData?.current?.temp_c}°{" "}
+            {weatherData?.current?.condition?.text}</Text></ListItem>
+          <ListItem>  <Image boxSize='250px' src={weatherData?.current?.condition?.icon} /></ListItem>
+        </List>
+
+        <List>
+          <ListItem style={{ fontSize: '50px' }}>{weatherData?.location?.name}</ListItem>
+          <ListItem>{weatherData?.location?.country}</ListItem>
+          <ListItem>{weatherData?.current?.last_updated}</ListItem>
+        </List>
+
+      </HStack>
+
+      <Grid templateColumns='repeat(6, 1fr)' gap={6}>
+        {
+          weatherData.forecast.forecastday[0].hour.slice(currentHour, currentHour + 6).map((hour) => (<>
+            <GridItem w='100%' h='40' bg='blue.500' >
+              {hour?.time.slice(10, 17)}   <br />
+              {<Image boxSize='80px' src={hour?.condition?.icon} />}  <br />
+              {hour?.condition?.text}
+
+            </GridItem>
+          </>
+          ))
+        }
+      </Grid>
 
 
-        <Grid templateColumns='repeat(7, 1fr)' gap={6}>
+      {/* <Grid templateColumns='repeat(7, 1fr)' gap={6}>
           {
             weatherData.forecast.forecastday.map((day) => (<>
               <GridItem w='100%' h='40' bg='blue.500' >{day.date.slice(8, 10)}.{day.date.slice(5, 7)}
@@ -46,10 +73,10 @@ function App() {
             </>
             ))
           }
-        </Grid>
+        </Grid> */}
 
 
-      </List>
+
     </GridItem>
   </Grid>
 
