@@ -1,6 +1,6 @@
-import { Grid, GridItem, HStack, Image, List, ListItem, Flex, Text } from '@chakra-ui/react'
+import { Grid, GridItem, HStack, Image, List, ListItem, Button, Text } from '@chakra-ui/react'
 import './App.css'
-import SearchInput from './components/SearchInput'
+
 import useData from './hooks/useData';
 import Navbar from './components/Navbar';
 import { useState } from 'react';
@@ -15,7 +15,10 @@ function App() {
   const currentHour = new Date().getHours();
   const [location, setLocation] = useState('Jerusalem');
   const weatherData = useData(location);
-
+  const [showHourlyGrid, setShowHourlyGrid] = useState(true);
+  const toggleGrid = () => {
+    setShowHourlyGrid(!showHourlyGrid);
+  };
 
   return <Grid templateAreas={{
     base: `"nav" "main"`,
@@ -45,37 +48,46 @@ function App() {
         </List>
 
       </HStack>
-      {/* 
-      <Grid templateColumns='repeat(6, 1fr)' gap={6}>
-        {
-          weatherData.forecast.forecastday[0].hour.slice(currentHour, currentHour + 6).map((hour) => (<>
-            <GridItem w='100%' h='40' bg='blue.500' >
-              {hour?.time.slice(10, 17)}   <br />
-              {<Image boxSize='80px' src={hour?.condition?.icon} />}  <br />
-              {hour?.condition?.text}
 
-            </GridItem>
-          </>
-          ))
-        }
-      </Grid> */}
+      {
+        showHourlyGrid ? (
+          <Grid templateColumns='repeat(7, 1fr)' gap={6}>
+            {
+              weatherData.forecast.forecastday[0].hour.slice(currentHour, currentHour + 7).map((hour) => (<>
+                <GridItem w='100%' h='40' bg='blue.500' >
+                  {hour?.time.slice(10, 17)}   <br />
+                  {<Image boxSize='80px' src={hour?.condition?.icon} />}  <br />
+                  {hour?.condition?.text}
 
-
-      {/* <Grid templateColumns='repeat(7, 1fr)' gap={6}>
-          {
-            weatherData.forecast.forecastday.map((day) => (<>
-              <GridItem w='100%' h='40' bg='blue.500' >{day.date.slice(8, 10)}.{day.date.slice(5, 7)}
-                <br />
-                {day.day.maxtemp_c}°
-                {<img src={day?.day?.condition?.icon} />}
-                {day?.day?.condition?.text}
-              </GridItem>
-            </>
-            ))
-          }
-        </Grid> */}
+                </GridItem>
+              </>
+              ))
+            }
+          </Grid>
 
 
+
+        ) :
+          (
+            <Grid templateColumns='repeat(7, 1fr)' gap={6}>
+              {
+                weatherData.forecast.forecastday.map((day) => (<>
+                  <GridItem w='100%' h='40' bg='blue.500' >{day.date.slice(8, 10)}.{day.date.slice(5, 7)}
+                    <br />
+                    {day.day.maxtemp_c}°
+                    {<img src={day?.day?.condition?.icon} />}
+                    {day?.day?.condition?.text}
+                  </GridItem>
+                </>
+                ))
+              }
+            </Grid>
+          )
+      }
+
+      <Button onClick={toggleGrid}>
+        {showHourlyGrid ? 'Show Daily Grid' : 'Show Hourly Grid'}
+      </Button>
 
     </GridItem>
   </Grid>
